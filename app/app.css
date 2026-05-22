@@ -306,6 +306,15 @@
     @apply mb-8 inline-flex items-center px-3 py-1 rounded-md bg-slate-900 border border-slate-700 shadow-sm;
   }
 
+  .home .dot {
+    @apply w-4 h-4 rounded bg-blue-100 flex items-center justify-center mr-2;
+  }
+
+    .home .pulse {
+        @apply w-2 h-2 rounded-full bg-blue-500 animate-pulse;
+    }
+
+
   .home .announce p {
     @apply text-[10px] font-bold uppercase tracking-widest text-zinc-400;
   }
@@ -319,7 +328,7 @@
   }
 
   .home .actions {
-    @apply flex flex-col sm:flex-row gap-4 justify-center mb-16;
+    @apply flex flex-col sm:flex-row gap-4 justify-center mb-1;
   }
 
   .home .cta {
@@ -330,17 +339,42 @@
     @apply w-full max-w-5xl mx-auto relative rounded-3xl overflow-hidden bg-gradient-to-b from-blue-500/10 to-slate-950 border border-slate-800 p-6 md:p-12 shadow-sm min-h-[420px] flex items-center justify-center;
   }
 
+  .home .grid-overlay {
+    @apply absolute inset-0 opacity-40 pointer-events-none;
+
+    background-image:
+            linear-gradient(#3b82f6 1px, transparent 1px),
+            linear-gradient(90deg, #3b82f6 1px, transparent 1px);
+
+    background-size: 60px 60px;
+}
+
+
   .home .upload-card {
-    @apply relative w-full max-w-xl bg-slate-900 rounded-2xl shadow-xl overflow-hidden border border-slate-800 p-8 z-10;
+    @apply relative w-full max-w-xl bg-slate-900 rounded-2xl shadow-xl overflow-hidden border border-slate-800 p-8 z-10 p-8 z-10 transition-transform hover:scale-[1.01] duration-500;
+
   }
 
-  .home .upload-head h3 {
+  .home.upload-head{
+    @apply text-center mb-6;
+  }
+  /* .home .upload-head h3 {
     @apply text-xl font-serif font-bold text-white;
   }
 
   .home .upload-head p {
     @apply text-zinc-400 text-sm mt-1;
-  }
+  } */
+
+  .home .upload-icon {
+    /* Combined utility declarations */
+    @apply w-12 h-12 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3;
+
+    .icon {
+        @apply text-blue-950 dark:text-blue-50 w-6 h-6;
+    }
+}
+
 
   /* ================= PROJECTS ================= */
 
@@ -369,11 +403,12 @@
   }
 
   .project-card {
-    @apply relative bg-slate-900 rounded-xl overflow-hidden border border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full;
+    @apply relative bg-slate-900 rounded-xl overflow-hidden border border-slate-500 shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col h-full;
   }
 
   .project-card .preview {
     @apply aspect-[4/3] overflow-hidden bg-slate-950 relative;
+    
   }
 
   .project-card .preview img {
@@ -388,12 +423,12 @@
     @apply text-[10px] font-bold uppercase tracking-wider text-zinc-200;
   }
 
-  .project-card .card-body {
-    @apply p-5 flex justify-between items-center bg-slate-900 border-t border-slate-800 grow;
+   .project-card .card-body {
+    @apply p-5 flex justify-between items-center bg-slate-900 border-t border-slate-800 grow transition-colors duration-300 group-hover:bg-[#1e293b];
   }
 
   .project-card h3 {
-    @apply text-lg font-serif font-bold text-white hover:text-blue-400 transition-colors;
+    @apply text-lg font-serif font-bold text-white group-hover:text-blue-400 transition-colors;
   }
 
   .project-card .meta {
@@ -401,8 +436,10 @@
   }
 
   .project-card .arrow {
-    @apply w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-zinc-400 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all duration-300;
-  }
+    @apply w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-zinc-400 group-hover:bg-blue-500 group-hover:text-white group-hover:border-blue-500 transition-all duration-300;
+  } 
+
+   
 
   /* ================= PARTNERS ================= */
 

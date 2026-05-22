@@ -5,6 +5,9 @@ import { useOutletContext } from "react-router";
 
 // apply the change to the navbar to show the auth state and buttons to sign in and sign out
 export const Navbar = () => {
+
+
+  //so values defined in AuthContext (parent ) is used by the variables declared in this piece of code?
   const {isSignedIn, userName , signIn , signOut } = useOutletContext<AuthContext>();
 
 
@@ -48,6 +51,7 @@ export const Navbar = () => {
           </ul>
         </div>
         <div className = "actions">
+          {/* if user is signed in, show greeting and sign out button, otherwise show sign in button */}
           {isSignedIn ? (
             <>
             <span className = "greeting ">
@@ -57,7 +61,10 @@ export const Navbar = () => {
               Log Out
             </Button>
             </>
-          ):
+          )
+          // if user is not logged in, show sign in button
+            :
+
           (
             <>
             <Button   onClick={handleAuthClick} size="sm" variant = "ghost">
