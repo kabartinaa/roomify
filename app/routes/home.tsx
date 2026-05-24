@@ -3,6 +3,9 @@ import { Navbar } from "../../components/Navbar";
 import type { Route } from "./+types/home";
 import Button from "../../components/ui/Button";
 //import { Welcome } from "../welcome/welcome";
+import { Upload } from "../../components/upload";
+import { useNavigate } from "react-router";
+
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -13,6 +16,12 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   // tailwind set up 
+  const naviagte = useNavigate();
+  const handleUploadComplete = (base64Data: string) => {
+    const newId = Date.now().toString();
+    naviagte(`/Visualizer/${newId}`);
+    return true;
+  }
   return (
     <div className="home">
       <Navbar />
@@ -50,7 +59,8 @@ export default function Home() {
 
           </div>
 
-          <p>Upload images</p>
+          <Upload onComplete = {handleUploadComplete}
+          />
         </div>
         </div>
       
@@ -90,23 +100,12 @@ export default function Home() {
                 <div className ="arrow">
                   <ArrowUpRight size={20} /> 
                 </div>
-
               </div>
-
               </div>
-
             </div>
-
           </div>
-
-
-
         </section>
-
-
-
       </section>
     </div>
-  
   )
 }
