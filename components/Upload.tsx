@@ -17,21 +17,31 @@ export const Upload = ({ onComplete = () => {} }: UploadProps) => {
   const [progress, setProgress] = React.useState(0);
 
   const uploadIntervalRef = React.useRef<number | null>(null);
+  const redirectTimeoutRef = React.useRef<number | null>(null);
 
-  const { isSignedIn } = useOutletContext();
+  const { isSignedIn } = useOutletContext<{ isSignedIn: boolean }>();
 
   React.useEffect(() => {
     return () => {
       if (uploadIntervalRef.current !== null) {
         window.clearInterval(uploadIntervalRef.current);
       }
+      if (redirectTimeoutRef.current !== null) {
+               window.clearTimeout(redirectTimeoutRef.current);
+              }
     };
   }, []);
+
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png"]);
+const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 
   const processFile = (selectedFile: File) => {
     if (!isSignedIn) {
       return;
     }
+
+    if (!ALLOWED_TYPES.has(selectedFile.type)) return;
+    if (selectedFile.size > MAX_FILE_SIZE_BYTES) return;
 
     const reader = new FileReader();
 
@@ -54,7 +64,7 @@ export const Upload = ({ onComplete = () => {} }: UploadProps) => {
             window.clearInterval(uploadIntervalRef.current);
             uploadIntervalRef.current = null;
 
-            window.setTimeout(() => {
+            redirectTimeoutRef.current = window.setTimeout(() =>{
               onComplete(base64);
             }, REDIRECT_DELAY_MS);
           }

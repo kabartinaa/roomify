@@ -16,7 +16,7 @@
   --color-surface-2: #0b1220;
 
   --font-serif: "Instrument Serif", serif;
-  --font-sans: Inter, sans-serif;
+  --font-sans: "Inter", sans-serif;
 
   --shadow-neobrutalism: 4px 4px 0px 0px rgba(59, 130, 246, 0.4);
 }

@@ -3,7 +3,7 @@ import { Navbar } from "../../components/Navbar";
 import type { Route } from "./+types/home";
 import Button from "../../components/ui/Button";
 //import { Welcome } from "../welcome/welcome";
-import { Upload } from "../../components/upload";
+import { Upload } from "../../components/Upload";
 import { useNavigate } from "react-router";
 
 
@@ -19,8 +19,8 @@ export default function Home() {
   const naviagte = useNavigate();
   const handleUploadComplete = (base64Data: string) => {
     const newId = Date.now().toString();
-    naviagte(`/Visualizer/${newId}`);
-    return true;
+    localStorage.setItem(`roomify-project-${newId}`, base64Data);
+    naviagte(`/Visualizer/${newId}`, { state: { base64Data } });
   }
   return (
     <div className="home">
