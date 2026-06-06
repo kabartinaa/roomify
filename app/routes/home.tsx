@@ -1,11 +1,14 @@
-import { ArrowRight, ArrowUpRight, Clock, Layers } from "lucide-react";
-import { Navbar } from "../../components/Navbar";
-import type { Route } from "./+types/home";
-import Button from "../../components/ui/Button";
-//import { Welcome } from "../welcome/welcome";
-import { Upload } from "../../components/Upload";
-import { useNavigate } from "react-router";
 
+
+
+import type { Route } from "./+types/home";
+import { Navbar } from "../../components/Navbar";
+import {ArrowRight, ArrowUpRight, Clock, Layers} from "lucide-react";
+import Button from "../../components/ui/Button";
+import { Upload } from "../../components/Upload";
+import {useNavigate} from "react-router";
+import {useEffect, useRef, useState} from "react";
+import {createProject} from "../../lib/puter.action";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -15,97 +18,144 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  // tailwind set up 
-  const naviagte = useNavigate();
-  const handleUploadComplete = (base64Data: string) => {
-    const newId = Date.now().toString();
-    localStorage.setItem(`roomify-project-${newId}`, base64Data);
-    naviagte(`/Visualizer/${newId}`, { state: { base64Data } });
-  }
+    const navigate = useNavigate();
+    const [projects, setProjects] = useState<DesignItem[]>([]);
+    const isCreatingProjectRef = useRef(false);   // false means - No project is currently being created.
+
+    const handleUploadComplete = async (base64Image: string) => {
+        try {
+
+            // handles the case when user clicks multiple times on upload button, which can lead to multiple projects being created with same image.
+            if(isCreatingProjectRef.current) return false;
+            isCreatingProjectRef.current = true;
+            const newId = Date.now().toString();
+            const name = `Residence ${newId}`;
+
+            const newItem = {
+                id: newId, name, sourceImage: base64Image,
+                renderedImage: undefined,
+                timestamp: Date.now()
+            }
+
+            const saved = await createProject({ item: newItem, visibility: 'private' });
+            const imageToShow = saved?.sourceImage || base64Image;
+
+            if (saved) {
+                setProjects((prev) => [saved, ...prev]);
+            }
+
+            navigate(`/visualizer/${newId}`, {
+                state: {
+                    initialImage: imageToShow,
+                    initialRendered: saved?.renderedImage || null,
+                    name
+                }
+            });
+
+            return true;
+        } finally {
+            isCreatingProjectRef.current = false;
+        }
+    }
+
+    // useEffect(() => {
+    //     const fetchProjects = async () => {
+    //         const items = await getProjects();
+
+    //         setProjects(items)
+    //     }
+
+    //     fetchProjects();
+    // }, []);
+
   return (
-    <div className="home">
-      <Navbar />
-      
-      <section className="hero">
+      <div className="home">
+          <Navbar />
 
-        <div className = "announce">
-          <div className = "dot">
-            <div className = "pulse"></div>
-          </div>
+          <section className="hero">
+              <div className="announce">
+                  <div className="dot">
+                      <div className="pulse"></div>
+                  </div>
 
-          <p>Introducing Roomify 2.0</p>
-        </div>
-
-        <h1>Build beautiful spaces at the speed of thought with Roomify_</h1>
-        <p className = "subtitle">ROOMIFY IS AN AI-FIRST DESIGN ENVIRONMENT THAT HELPS YOU VISUALIZE , RENDER, AND SHIP ARCHITECTURAL PROJECTS FASTER THAN EVER.</p>
-        <div className = "actions">
-          <a href ="#upload" className = "cta">
-            Start Building <ArrowRight className="icon" />
-          </a>
-          <Button variant="outline" className = "demo">  Watch Demo</Button>
-        </div>
-        <div id = "upload" className = "upload-shell">
-        <div className="grid-overlay"/>
-
-
-        <div className = "upload-card">
-          <div className ="upload-head">
-            <div className = "upload-icon">
-              <Layers className="icon"/>
-            </div>
-
-            <h3>Upload your floor plan</h3>
-            <p>Supports JPG , PNG , formats up to 10MB</p>
-
-          </div>
-
-          <Upload onComplete = {handleUploadComplete}
-          />
-        </div>
-        </div>
-      
-        <section className = "projects">
-          <div className = "section-inner">
-            <div className = "section-head">
-              <div className = "copy">
-              <h2>Projects</h2>
-              <p>Your latest work , and shared community projects all in one workspace </p>
-              </div>
-            </div>
-
-            <div className = "projects-grid">
-            <div className = "project-card group" >
-              <div className ="preview">
-                <img src="https://styluxconstruction.com/wp-content/uploads/2023/06/architectural_blueprint_of_a_luxurious_house_plan_featu_33be3418-7f14-4378-a232-a9b1f1ae0043.jpg"
-                 />
-
-                 <div className = "badge">
-                  <span>Community</span>
-                 </div>
+                  <p>Introducing Roomify 2.0</p>
               </div>
 
-              <div className ="card-body">
-                <div>
-                 <h3>Modern Family Home</h3>
-                 <div className ="meta">
-                    <Clock size={16} />
-                    <span>
-                      {new Date('05/01/2023').toLocaleDateString()}
-                    </span>
-                    <span> By Kab </span>
+              <h1>Build beautiful spaces at the speed of thought with Roomify</h1>
 
-                 </div>
-                </div>
+              <p className="subtitle">
+                  Roomify is an AI-first design environment that helps you visualize, render, and ship architectural projects faster  than ever.
+              </p>
 
-                <div className ="arrow">
-                  <ArrowUpRight size={20} /> 
-                </div>
+              <div className="actions">
+                  <a href="#upload" className="cta">
+                      Start Building <ArrowRight className="icon" />
+                  </a>
+
+                  <Button variant="outline" className = "demo">  Watch Demo</Button>
               </div>
+
+              <div id="upload" className="upload-shell">
+                <div className="grid-overlay" />
+
+                  <div className="upload-card">
+                      <div className="upload-head">
+                          <div className="upload-icon">
+                              <Layers className="icon" />
+                          </div>
+
+                          <h3>Upload your floor plan</h3>
+                          <p>Supports JPG, PNG, formats up to 10MB</p>
+                      </div>
+
+                      <Upload onComplete={handleUploadComplete} />
+                  </div>
               </div>
-            </div>
-          </div>
-        </section>
-      </section>
-    </div>
+          </section>
+
+          <section className="projects">
+              <div className="section-inner">
+                  <div className="section-head">
+                      <div className="copy">
+                          <h2>Projects</h2>
+                          <p>Your latest work and shared community projects, all in one place.</p>
+                      </div>
+                  </div>
+
+                  <div className="projects-grid">
+                      {projects.map(({id, name, renderedImage, sourceImage, timestamp}) => (
+                          <div key={id} className="project-card group" onClick={() => 
+                          
+                          navigate(`/visualizer/${id}`)} >
+
+                              <div className="preview">
+                                  <img  src={renderedImage || sourceImage} alt="Project"
+                                  />
+
+                                  <div className="badge">
+                                      <span>Community</span>
+                                  </div>
+                              </div>
+
+                              <div className="card-body">
+                                  <div>
+                                      <h3>{name}</h3>
+
+                                      <div className="meta">
+                                          <Clock size={12} />
+                                          <span>{new Date(timestamp).toLocaleDateString()}</span>
+                                          <span>By JS Mastery</span>
+                                      </div>
+                                  </div>
+                                  <div className="arrow">
+                                      <ArrowUpRight size={18} />
+                                  </div>
+                              </div>
+                          </div>
+                      ))}
+                  </div>
+              </div>
+          </section>
+      </div>
   )
 }
