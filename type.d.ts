@@ -20,6 +20,7 @@ interface DesignItem {
     renderedImage?: string | null;
     renderedPath?: string | null;
     publicPath?: string | null;
+    visibility?: "private" | "public";
     timestamp: number;
     ownerId?: string | null;
     sharedBy?: string | null;
@@ -47,7 +48,7 @@ type RenderCompletePayload = {
 
 type VisualizerLocationState = {
     initialImage?: string;
-    initialRender?: string | null;
+    initialRendered?: string | null;
     ownerId?: string | null;
     name?: string | null;
     sharedBy?: string | null;
@@ -61,7 +62,7 @@ interface VisualizerProps {
     onUnshare?: (image: string) => Promise<void> | void;
     projectName?: string;
     projectId?: string;
-    initialRender?: string | null;
+    initialRendered?: string | null;
     isPublic?: boolean;
     sharedBy?: string | null;
     canUnshare?: boolean;
@@ -107,7 +108,7 @@ type ShareAction = "share" | "unshare";
 type ShareStatus = "idle" | "saving" | "done";
 
 type HostingConfig = { subdomain: string };
-type HostedAsset = { url: string };
+type HostedAsset = { url: string; path?: string };
 
 interface StoreHostedImageParams {
     hosting: HostingConfig | null;

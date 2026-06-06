@@ -38,19 +38,30 @@ export default function Home() {
             }
 
             const saved = await createProject({ item: newItem, visibility: 'private' });
-            const imageToShow = saved?.sourceImage || base64Image;
+            //const imageToShow = saved?.sourceImage || base64Image;
 
             if (saved) {
                 setProjects((prev) => [saved, ...prev]);
+               navigate(`/visualizer/${newId}`, {
+                   state: {
+                       initialImage: saved.sourceImage,
+                       initialRendered: saved.renderedImage || null,
+                       name
+                   }
+               });
+            } else {
+           +    // Show error to user or remain on upload page
+           +    console.error('Project creation failed - staying on upload page');
             }
+                    
 
-            navigate(`/visualizer/${newId}`, {
-                state: {
-                    initialImage: imageToShow,
-                    initialRendered: saved?.renderedImage || null,
-                    name
-                }
-            });
+            // navigate(`/visualizer/${newId}`, {
+            //     state: {
+            //         initialImage: imageToShow,
+            //         initialRendered: saved?.renderedImage || null,
+            //         name
+            //     }
+            // });
 
             return true;
         } finally {
@@ -124,9 +135,19 @@ export default function Home() {
 
                   <div className="projects-grid">
                       {projects.map(({id, name, renderedImage, sourceImage, timestamp}) => (
-                          <div key={id} className="project-card group" onClick={() => 
+                        //   <div key={id} className="project-card group" onClick={() => 
                           
-                          navigate(`/visualizer/${id}`)} >
+                        //   navigate(`/visualizer/${id}`)} >
+
+                        <div key={id} className="project-card group" onClick={() => 
+                              navigate(`/visualizer/${id}`, {
+                                state: {
+                                  initialImage: sourceImage,
+                                  initialRendered: renderedImage || null,
+                                  name
+                                }
+                              })
+                            }>
 
                               <div className="preview">
                                   <img  src={renderedImage || sourceImage} alt="Project"

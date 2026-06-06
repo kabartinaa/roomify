@@ -8,7 +8,7 @@ import {
 } from '../lib/constants';
 
 type UploadProps = {
-  onComplete?: (base64Image: string) => void;
+  onComplete?: (base64Image: string) => Promise<boolean | void> | boolean | void;
 };
 
 export const Upload = ({ onComplete = () => {} }: UploadProps) => 
