@@ -81,8 +81,9 @@ export const uploadImageToHosting = async ({hosting , url , projectId , label} :
 
                 const uploadFile = new File([resolved.blob], `${label}.${ext}` , {type: contentType});
 
-                await puter.fs.mkdir(dir , {createMissingParents: true});   // projects/101
-                await puter.fs.write(filePath , uploadFile);   // Stores the image in hosting storage.
+                await puter.fs.write(filePath , uploadFile, {
+                    createMissingParents: true,
+                });   // Stores the image in hosting storage.
 
                 const hostedUrl = getHostedUrl({subdomain: hosting.subdomain}, filePath); // Generates the public URL for the stored image based on the hosting configuration and file path.
                 return hostedUrl ? {url: hostedUrl} : null;
