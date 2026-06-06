@@ -11,7 +11,8 @@ type UploadProps = {
   onComplete?: (base64Image: string) => void;
 };
 
-export const Upload = ({ onComplete = () => {} }: UploadProps) => {
+export const Upload = ({ onComplete = () => {} }: UploadProps) => 
+{
   const [file, setFile] = React.useState<File | null>(null);
   const [isDragging, setIsDragging] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
@@ -64,8 +65,12 @@ const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
             window.clearInterval(uploadIntervalRef.current);
             uploadIntervalRef.current = null;
 
-            redirectTimeoutRef.current = window.setTimeout(() =>{
-              onComplete(base64);
+            redirectTimeoutRef.current = window.setTimeout(async () => {
+              try {
+                await onComplete(base64);
+              } catch (error) {
+                console.error('Upload onComplete failed', error);
+              }
             }, REDIRECT_DELAY_MS);
           }
 
@@ -176,3 +181,5 @@ const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
     </div>
   );
 };
+
+
