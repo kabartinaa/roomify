@@ -81,8 +81,14 @@ export const uploadImageToHosting = async ({hosting , url , projectId , label} :
 
                 const uploadFile = new File([resolved.blob], `${label}.${ext}` , {type: contentType});
 
+//<<<<<<< HEAD
                 // await puter.fs.mkdir(dir , {createMissingParents: true});   // projects/101
                 // await puter.fs.write(filePath , uploadFile);   // Stores the image in hosting storage.
+//=======
+                await puter.fs.write(filePath , uploadFile, {
+                    createMissingParents: true,
+                });   // Stores the image in hosting storage.
+//>>>>>>> f7b46c9e9065cf54e0d75fb50538e7c14ec81e2
 
                 await puter.fs.write(filePath , uploadFile, {
                     createMissingParents: true,
