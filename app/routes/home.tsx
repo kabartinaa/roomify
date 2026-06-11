@@ -8,7 +8,7 @@ import Button from "../../components/ui/Button";
 import { Upload } from "../../components/Upload";
 import {useNavigate} from "react-router";
 import {useEffect, useRef, useState} from "react";
-import {createProject} from "../../lib/puter.action";
+import {createProject , getProjects} from "../../lib/puter.action";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -69,15 +69,16 @@ export default function Home() {
         }
     }
 
-    // useEffect(() => {
-    //     const fetchProjects = async () => {
-    //         const items = await getProjects();
+    useEffect(() => {
+        const fetchProjects = async () => {
+            const items = await getProjects();
 
-    //         setProjects(items)
-    //     }
+            // getProjects may return undefined; ensure we always set an array
+            setProjects(items || []);
+        }
 
-    //     fetchProjects();
-    // }, []);
+        fetchProjects();
+    }, []);
 
   return (
       <div className="home">
