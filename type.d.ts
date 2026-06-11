@@ -20,6 +20,7 @@ interface DesignItem {
     renderedImage?: string | null;
     renderedPath?: string | null;
     publicPath?: string | null;
+    visibility?: "private" | "public";
     timestamp: number;
     ownerId?: string | null;
     sharedBy?: string | null;
@@ -107,7 +108,7 @@ type ShareAction = "share" | "unshare";
 type ShareStatus = "idle" | "saving" | "done";
 
 type HostingConfig = { subdomain: string };
-type HostedAsset = { url: string };
+type HostedAsset = { url: string; path?: string };
 
 interface StoreHostedImageParams {
     hosting: HostingConfig | null;

@@ -8,7 +8,7 @@ import Button from "../../components/ui/Button";
 import { Upload } from "../../components/Upload";
 import {useNavigate} from "react-router";
 import {useEffect, useRef, useState} from "react";
-import {createProject} from "../../lib/puter.action";
+import {createProject , getProjects} from "../../lib/puter.action";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -38,19 +38,30 @@ export default function Home() {
             }
 
             const saved = await createProject({ item: newItem, visibility: 'private' });
-            const imageToShow = saved?.sourceImage || base64Image;
+            //const imageToShow = saved?.sourceImage || base64Image;
 
             if (saved) {
                 setProjects((prev) => [saved, ...prev]);
+               navigate(`/visualizer/${newId}`, {
+                   state: {
+                       initialImage: saved.sourceImage,
+                       initialRendered: saved.renderedImage || null,
+                       name
+                   }
+               });
+            } else {
+           +    // Show error to user or remain on upload page
+           +    console.error('Project creation failed - staying on upload page');
             }
+                    
 
-            navigate(`/visualizer/${newId}`, {
-                state: {
-                    initialImage: imageToShow,
-                    initialRendered: saved?.renderedImage || null,
-                    name
-                }
-            });
+            // navigate(`/visualizer/${newId}`, {
+            //     state: {
+            //         initialImage: imageToShow,
+            //         initialRendered: saved?.renderedImage || null,
+            //         name
+            //     }
+            // });
 
             return true;
         } finally {
@@ -58,15 +69,16 @@ export default function Home() {
         }
     }
 
-    // useEffect(() => {
-    //     const fetchProjects = async () => {
-    //         const items = await getProjects();
+    useEffect(() => {
+        const fetchProjects = async () => {
+            const items = await getProjects();
 
-    //         setProjects(items)
-    //     }
+            // getProjects may return undefined; ensure we always set an array
+            setProjects(items || []);
+        }
 
-    //     fetchProjects();
-    // }, []);
+        fetchProjects();
+    }, []);
 
   return (
       <div className="home">
@@ -124,9 +136,19 @@ export default function Home() {
 
                   <div className="projects-grid">
                       {projects.map(({id, name, renderedImage, sourceImage, timestamp}) => (
-                          <div key={id} className="project-card group" onClick={() => 
+                        //   <div key={id} className="project-card group" onClick={() => 
                           
-                          navigate(`/visualizer/${id}`)} >
+                        //   navigate(`/visualizer/${id}`)} >
+
+                        <div key={id} className="project-card group" onClick={() => 
+                              navigate(`/visualizer/${id}`, {
+                                state: {
+                                  initialImage: sourceImage,
+                                  initialRendered: renderedImage || null,
+                                  name
+                                }
+                              })
+                            }>
 
                               <div className="preview">
                                   <img  src={renderedImage || sourceImage} alt="Project"

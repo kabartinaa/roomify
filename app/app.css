@@ -306,7 +306,7 @@ html[data-theme="light"], [data-theme="light"] {
 
   .visualizer .panel-meta h2,
   .visualizer .panel-meta h3 {
-    @apply text-white font-serif font-bold;
+    @apply   text-lg text-white font-serif font-bold;
   }
 
   .visualizer .panel-meta p,
@@ -314,16 +314,82 @@ html[data-theme="light"], [data-theme="light"] {
     @apply text-zinc-400;
   }
 
+  .visualizer .panel-actions {
+    @apply flex flex-wrap items-center gap-3 p-5 border-t border-slate-800 bg-slate-950;
+
+    .export {
+      @apply bg-blue-500 text-white hover:bg-orange-600 h-9 border-none shadow-sm rounded-xl px-4;
+    }
+
+    .share {
+      @apply bg-black text-white h-9 shadow-sm hover:bg-zinc-800 rounded-xl px-4;
+    }
+  }
+
   .visualizer .render-area {
-    @apply relative bg-slate-950 min-h-[420px];
+    @apply relative bg-zinc-950 min-h-[420px] rounded-b-xl overflow-hidden border-t border-slate-800;
+
+    .render-img {
+      @apply w-full h-full object-contain transition-all duration-700 opacity-100 scale-100;
+    }
+
+    &.is-processing {
+      .render-img {
+        @apply opacity-50 blur-sm scale-105;
+      }
+    }
+
+    .render-placeholder {
+      @apply w-full h-full flex items-center justify-center text-zinc-500;
+    }
+
+    .render-fallback {
+      @apply w-full h-full object-contain opacity-50;
+    }
+
+    .render-overlay {
+      @apply absolute inset-0 flex flex-col items-center justify-center z-30 bg-white/10 backdrop-blur-sm transition-opacity duration-300;
+
+      .rendering-card {
+        @apply bg-slate-900 px-6 py-4 rounded-xl border border-slate-700 flex flex-col items-center shadow-2xl;
+
+        .spinner {
+          @apply w-8 h-8 mb-3 animate-spin text-blue-400;
+        }
+
+        .title {
+          @apply text-sm font-bold text-white;
+        }
+
+        .subtitle {
+          @apply text-xs text-zinc-400 mt-1;
+        }
+      }
+    }
   }
 
-  .visualizer .render-overlay {
-    @apply absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm;
-  }
+  .visualizer.compare {
+    @apply shadow-xl;
 
-  .visualizer .rendering-card {
-    @apply bg-slate-900 border border-slate-700 rounded-xl p-6 shadow-2xl;
+    .panel-header {
+      @apply flex items-center justify-between;
+
+      .hint {
+        @apply text-xs text-zinc-400;
+      }
+    }
+
+    .compare-stage {
+      @apply relative bg-zinc-100 overflow-hidden;
+    }
+
+    .compare-fallback {
+      @apply flex items-center justify-center;
+    }
+
+    .compare-img {
+      @apply w-full h-auto object-contain;
+    }
   }
 
   /* ================= HOME ================= */
