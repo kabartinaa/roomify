@@ -26,6 +26,14 @@ npm install
 
 ### Development
 
+Copy the example environment file and fill in your own values:
+
+```bash
+cp .env.example .env.local
+```
+
+The app expects `VITE_PUTER_WORKER_URL` to be set in `.env.local`.
+
 Start the development server with HMR:
 
 ```bash
