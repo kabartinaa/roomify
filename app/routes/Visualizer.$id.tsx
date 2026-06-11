@@ -5,7 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { generate3DView } from "../../lib/ai.action";
 import {createProject, getProjectById} from "../../lib/puter.action";
 import {ReactCompareSlider, ReactCompareSliderImage} from "react-compare-slider";
+import {PUTER_WORKER_URL} from "../../lib/constants"
 //import { getProject } from "../../lib/puter.action"; // assuming this exists
+import puter from "@heyputer/puter.js";
 const VisualizerId = () => {
   const{id} = useParams();
   const {userId} = useOutletContext<AuthContext>();
@@ -25,6 +27,7 @@ const [project, setproject] = useState<DesignItem | null>(null);
 const [isProjectLoading, setisProjectLoading] = useState(true)
 const [isProcessing , setIsProcessing] = useState(false);
 const [errorMessage, setErrorMessage] = useState<string | null>(null);
+const [isSharing,setIsSharing]=useState(false);
 
 const[currentImage , setCurrentImage] = useState<string | null> (null);   // get it from backed 
 
@@ -42,6 +45,62 @@ const handleExport = () => {
   link.click();
   link.remove();
 };
+
+
+//handle share
+const handleShare = async(item:DesignItem  )=>{
+  if(!item.id) return;
+
+
+  try{ 
+  setIsSharing(true);
+  
+  
+  const action =
+  item.isPublic? "unshare": "share";
+  
+  
+  const response = await puter.workers.exec(
+    `${PUTER_WORKER_URL}/api/projects/${action}`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        id: item.id
+      })
+    }
+  );
+  const data = await response.json();
+  
+  if(!response.ok){
+
+    console.error(
+      "Share operation failed:",
+      await response.text()
+    );
+
+    return;
+  }
+
+  if(data.project){
+
+    const updatedProject = {
+      ...data.project,
+      isPublic: !item.isPublic
+    };
+
+
+    setproject(updatedProject);
+
+  }
+  
+  }
+  catch(err){
+  console.error(err);
+  }
+  finally{
+  setIsSharing(false);
+  }
+  }
 
 // process the initial image to generate the 3D view, only if we have an initial image and haven't already processed it
 //This function takes a project's source image, 
@@ -197,12 +256,35 @@ useEffect(() => {
 
               </Button>
 
-              <Button
-                size="sm" 
-                onClick = {() => {}}
-                className = "share"
-              >
-                <Share2 className = "w-4 h-4 mr-2"/>Share
+              {/* <Button
+    size="sm"
+    disabled={!project || isProcessing}
+    onClick={() =>
+      {
+        if(project){
+          handleShare(project);
+      } else {
+          console.log("Project is null");
+      }
+        console.log("Share button clicked");
+      } 
+    className="share"
+>
+      {project?.isPublic ? "Unshare" : "Share"} */}
+      <Button
+    size="sm"
+    onClick={() => {
+        console.log("Share button clicked");
+        if(project){
+            handleShare(project);
+        } else {
+            console.log("Project is null");
+        }
+    }}
+>
+    {project?.isPublic ? "Unshare" : "Share"}
+
+                <Share2 className = "w-4 h-4 mr-2"/>
 
               </Button>
             </div>         

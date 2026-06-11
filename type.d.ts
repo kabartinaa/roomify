@@ -26,6 +26,9 @@ interface DesignItem {
     sharedBy?: string | null;
     sharedAt?: string | null;
     isPublic?: boolean;
+    userId?: string | null;
+    username?: string | null;
+    originalOwner?: string | null;
 }
 
 interface DesignConfig {
