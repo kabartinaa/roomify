@@ -37,12 +37,19 @@ export const generate3DView = async ({sourceImage} : Generate3DViewParams)  => {
         ? sourceImage 
         : await fetchasdataurl(sourceImage); 
        
-    const  base64Data = dataUrl.split(",")[1];
-    const mimeType = dataUrl.split(";")[0].split(":")[1];
+    // const  base64Data = dataUrl.split(",")[1];
+    // const mimeType = dataUrl.split(";")[0].split(":")[1];
 
-    if (!base64Data || !mimeType) {
+    // if (!base64Data || !mimeType) {
+    //     throw new Error("Invalid data URL format");
+    // }
+
+    const match = dataUrl.match(/^data:([^;,]+);base64,(.+)$/);
+   if (!match) {
         throw new Error("Invalid data URL format");
     }
+    const mimeType = match[1];
+    const base64Data = match[2];
 
     const response = await puter.ai.txt2img(ROOMIFY_RENDER_PROMPT, {
         provider: "gemini",
