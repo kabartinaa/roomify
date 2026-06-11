@@ -33,7 +33,7 @@ export const Upload = ({ onComplete = () => {} }: UploadProps) =>
     };
   }, []);
 
-const ALLOWED_TYPES = new Set(["image/jpeg", "image/png"]);
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
 
   const processFile = (selectedFile: File) => {
@@ -137,7 +137,7 @@ const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024;
           <input
             type="file"
             className="drop-input"
-            accept=".jpg,.jpeg,.png"
+            accept=".jpg,.jpeg,.png,.webp"
             disabled={!isSignedIn}
             onChange={handleFileChange}
           />

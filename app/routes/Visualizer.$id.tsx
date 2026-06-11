@@ -32,6 +32,17 @@ const handleBack = () => {
   navigate("/"); // Navigate back to the home page
 }
 
+const handleExport = () => {
+  if (!currentImage) return;
+
+  const link = document.createElement("a");
+  link.href = currentImage;
+  link.download = `roomify-render-${id || "project"}.png`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
+
 // process the initial image to generate the 3D view, only if we have an initial image and haven't already processed it
 //This function takes a project's source image, 
 // generates a 3D-rendered version, 
@@ -177,10 +188,10 @@ useEffect(() => {
             </div>
             <div className = "panel-actions">
               <Button
-                size="sm" 
-                onClick = {() => {}}
-                className = "export"
-                disabled = {!currentImage}
+                size="sm"
+                onClick={handleExport}
+                className="export"
+                disabled={!currentImage}
               >
                 <Download className = "w-4 h-4 mr-2"/> Export
 
